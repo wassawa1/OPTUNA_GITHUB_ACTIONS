@@ -1,0 +1,37 @@
+name: Run Optuna Optimization
+
+on:
+  push:
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリをチェックアウト
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Pythonをセットアップ
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 必要なライブラリをインストール
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install optuna optuna-dashboard
+
+      # 最適化スクリプトを実行
+      - name: Run Optimization
+        run: |
+          python optimize.py
+
+      # 最適化結果（データベース）を保存
+      - name: Upload Optuna Database
+        uses: actions/upload-artifact@v4
+        with:
+          name: optuna-db
+          path: optuna_complex.db
